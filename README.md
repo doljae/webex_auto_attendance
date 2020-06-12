@@ -5,7 +5,7 @@ side project for TA in Univ.
 추후 내용 추가
 
 ## 설치 및 사용방법
-우측 상단의 초록색 버튼 "Clone or download" 클릭, 다운로드 후 압축 해제<br>
+우측 상단의 초록색 버튼 "Clone or download" 클릭 => "Download zip" 클릭 => 다운로드 후 압축 해제<br>
 이후 진행은 사용자 매뉴얼 참고(pptx파일)
 
 ## 사용 방법
