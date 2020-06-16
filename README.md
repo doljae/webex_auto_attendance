@@ -18,7 +18,10 @@ side project for TA in Univ.
 
 
 ## 주의 사항
-개인적으로 사용하려고 만들었기 때문에 오류가 발생할 수 있습니다.
+개인적으로 사용하려고 만들었기 때문에 오류가 발생할 수 있습니다.<br>
+만일 오류 발생 시 준비한 채팅로그 txt 파일을 한개 씩 넣어보면서 테스트를 부탁드립니다.<br>
+오류가 발생한 경우 https://open.kakao.com/o/sBg5algc 으로 연락 바랍니다.<br>
+
 
 
 ## Release History
