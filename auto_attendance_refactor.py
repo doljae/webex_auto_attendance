@@ -1,12 +1,14 @@
-#-*- coding:utf-8 -*-
-import sys
-from PyQt5.QtWidgets import *
-import pandas as pd
+# -*- coding:utf-8 -*-
 import datetime
 import glob
+import sys
 
-#UI파일 연결
-#단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
+import pandas as pd
+from PyQt5.QtWidgets import *
+
+
+# UI파일 연결
+# 단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
 # form_class = uic.loadUiType("auto_attendance.ui")[0]
 
 class WindowClass(QWidget):
@@ -23,7 +25,7 @@ class WindowClass(QWidget):
         self.label4 = QLabel()
         self.label2 = QLabel()
 
-        self.label5=QLabel()
+        self.label5 = QLabel()
 
         self.pushButton1 = QPushButton("수강생명단.csv를 선택해주세요.")
         self.pushButton1.clicked.connect(self.pushButtonClicked1)
@@ -50,8 +52,9 @@ class WindowClass(QWidget):
         self.setLayout(layout)
 
     def solution(self):
+        global today
         STUDENT_LIST_CSV = self.label1.text()
-        LIMIT_ATTENDANCE_TIME=self.label4.text()
+        LIMIT_ATTENDANCE_TIME = self.label4.text()
         AFFORDABLE_MINUTE = self.label2.text()
 
         path = "./text_list/*"
@@ -63,45 +66,34 @@ class WindowClass(QWidget):
         limit_datetime_object = limit_datetime_object1 + datetime.timedelta(minutes=int(AFFORDABLE_MINUTE))
         df1 = pd.read_csv(STUDENT_LIST_CSV)
         for text_dir in file_list_txt:
-            # print(text_dir)
-            # print(1)
             dict1 = {}
             for i in range(len(df1)):
                 student_info = df1.iloc[i, 0].astype(str)
                 dict1[student_info] = [df1.iloc[i, 1]]
             text1 = open(text_dir, "r", encoding='UTF16')
-            # print(2)
-            counter=0
+            counter = 0
             for line in text1:
-                # print(3)
                 if line == "\n":
                     continue
                 list_line = line.split()
-                if len(list_line)<6:
+                if len(list_line) < 6:
                     continue
 
-                # if list_line[4] == "오전":
                 access_time = list_line[5]
                 access_time = access_time
-                # elif list_line[4] == "오후":
-                    # access_time = list_line[5]
-                    # hour=int(access_time[:2])
-                    # hour=hour+12
-                    # access_time=str(hour)+access_time[2:]
-                # print(4)
-                if counter==0:
-                    today_check=list_line[:4]
-                    counter=1
+
+                if counter == 0:
+                    today_check = list_line[:4]
+                    counter = 1
 
                 # 이 부분이 계속 반복되서 마지막에 연속으로 채팅칠 경우에 today 변수가 날짜대신
                 # 다른 텍스트로 들어가는 경우가 있음. 기능상에 문제는 없음.
-                today_year=list_line[0]
-                today_month=list_line[1]
-                today_date=list_line[2]
-                today=today_month+today_date
-                today_this=list_line[:4]
+                today_month = list_line[1]
+                today_date = list_line[2]
+                today = today_month + today_date
+                today_this = list_line[:4]
 
-                if today_this!=today_check:
+                if today_this != today_check:
                     continue
 
                 target_list_line = set(list_line[6:])
@@ -109,7 +101,8 @@ class WindowClass(QWidget):
                 target_list_line.sort(key=lambda x: len(x), reverse=True)
                 stu_id = ""
                 for i in range(len(target_list_line)):
-                    if len(target_list_line[i]) == 9 and target_list_line[i].isdigit() is True and target_list_line[i][:2] == "20":
+                    if len(target_list_line[i]) == 9 and target_list_line[i].isdigit() is True and target_list_line[i][
+                                                                                                   :2] == "20":
                         for i in range(len(target_list_line)):
                             for item in dict1:
                                 if dict1[item][0] in target_list_line[i]:
@@ -126,7 +119,7 @@ class WindowClass(QWidget):
                                 for item in dict1:
                                     if dict1[item][0] in target_list_line[i]:
                                         if len(stu_id) == 0:
-                                            stu_id=item
+                                            stu_id = item
                                             break
                 if len(stu_id) != 0:
                     if stu_id in dict1:
@@ -140,13 +133,10 @@ class WindowClass(QWidget):
                     df1.loc[df1["성명"] == dict1[item][0], today] = "결석"
                 else:
                     first_access_time_str = dict1[item][1]
-                    # print(first_access_time_str)
                     access_datetime_object = datetime.datetime.strptime(first_access_time_str, "%H:%M")
-                    # print(access_datetime_object, limit_datetime_object)
                     if access_datetime_object > limit_datetime_object:
                         df1.loc[df1["성명"] == dict1[item][0], today] = "지각"
                     pass
-            print("파일하나 끝남")
         df1.to_csv("result.csv", encoding="utf-8-sig")
         # ========================================= phase 2 =====================================================
         df2 = pd.read_csv("result.csv")
@@ -191,15 +181,16 @@ class WindowClass(QWidget):
         if ok:
             self.label2.setText(str(text))
 
-if __name__ == "__main__" :
-    #QApplication : 프로그램을 실행시켜주는 클래스
+
+if __name__ == "__main__":
+    # QApplication : 프로그램을 실행시켜주는 클래스
     app = QApplication(sys.argv)
 
-    #WindowClass의 인스턴스 생성
+    # WindowClass의 인스턴스 생성
     myWindow = WindowClass()
 
-    #프로그램 화면을 보여주는 코드
+    # 프로그램 화면을 보여주는 코드
     myWindow.show()
 
-    #프로그램을 이벤트루프로 진입시키는(프로그램을 작동시키는) 코드
+    # 프로그램을 이벤트루프로 진입시키는(프로그램을 작동시키는) 코드
     app.exec_()
